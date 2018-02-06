@@ -6,6 +6,8 @@ using Grace.Runtime;
 
 namespace KernanCompiler
 {
+    public static void RecordArguments(string[] args, int lastArgs);
+
     [ModuleEntryPoint]
     public class ExposedCompiler : GraceObject
     {
@@ -25,6 +27,8 @@ namespace KernanCompiler
                         new NativeMethod1(mParseFile)));
             AddMethod("parseNodes", new DelegateMethod0(
                         new NativeMethod0(mParseNodes)));
+            AddMethod("args", new DelegateMethod0(
+                        new NativeMethod0(mArguments)));
         }
 
         private GraceObject mParse(GraceObject code)
@@ -45,6 +49,30 @@ namespace KernanCompiler
                 return new GraceObjectProxy(p.Parse());
             }
         }
+
+        private GraceObject mTranslateFile(GraceObject code)
+        {
+            GraceString gs = code.FindNativeParent<GraceString>();
+            string path = gs.Value;
+            using (StreamReader reader = File.OpenText(path))
+            {
+                var p= new Parser(reader.ReadToEnd());
+                return new GraceObjectProxy(p.Parse());
+            }
+        }
+
+
+        private GraceObject mArguments() 
+        {
+            IList<String> unusedArguments = ConsoleEntryPoint.UnusedArguments;
+            IList<GraceString> graceUnusedArguments = new List<GraceString>();
+
+            foreach (var a in unusedArguments) 
+                graceUnusedArguments.Add(GraceString.Create(a));
+
+            return GraceVariadicList.Of(graceUnusedArguments);
+        }
+
 
         private GraceObject mParseNodes()
         {
