@@ -26,6 +26,8 @@ namespace KernanCompiler
                         new NativeMethod1(mParse)));
             AddMethod("parseFile(_)", new DelegateMethod1(
                         new NativeMethod1(mParseFile)));
+            AddMethod("translateFile(_)", new DelegateMethod1(
+                        new NativeMethod1(mTranslateFile)));
             AddMethod("parseNodes", new DelegateMethod0(
                         new NativeMethod0(mParseNodes)));
             AddMethod("args", new DelegateMethod0(
@@ -57,8 +59,11 @@ namespace KernanCompiler
             string path = gs.Value;
             using (StreamReader reader = File.OpenText(path))
             {
-                var p= new Parser(reader.ReadToEnd());
-                return new GraceObjectProxy(p.Parse());
+                var p = new Parser(reader.ReadToEnd());
+                var module = p.Parse();
+                ExecutionTreeTranslator ett = new ExecutionTreeTranslator();
+                Node eModule = ett.Translate(module as ObjectParseNode);
+                return eModule;
             }
         }
 
