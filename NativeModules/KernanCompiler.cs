@@ -3,11 +3,12 @@ using System.IO;
 using Grace.Parsing;
 using Grace.Execution;
 using Grace.Runtime;
+using Grace.Utility;
+using Grace;
+
 
 namespace KernanCompiler
 {
-    public static void RecordArguments(string[] args, int lastArgs);
-
     [ModuleEntryPoint]
     public class ExposedCompiler : GraceObject
     {
@@ -50,24 +51,13 @@ namespace KernanCompiler
             }
         }
 
-        private GraceObject mTranslateFile(GraceObject code)
-        {
-            GraceString gs = code.FindNativeParent<GraceString>();
-            string path = gs.Value;
-            using (StreamReader reader = File.OpenText(path))
-            {
-                var p= new Parser(reader.ReadToEnd());
-                return new GraceObjectProxy(p.Parse());
-            }
-        }
 
-
-        private GraceObject mArguments() 
+        private GraceObject mArguments()
         {
-            IList<String> unusedArguments = ConsoleEntryPoint.UnusedArguments;
+            IList<string> unusedArguments = UnusedArguments.UnusedArgs;
             IList<GraceString> graceUnusedArguments = new List<GraceString>();
 
-            foreach (var a in unusedArguments) 
+            foreach (var a in unusedArguments)
                 graceUnusedArguments.Add(GraceString.Create(a));
 
             return GraceVariadicList.Of(graceUnusedArguments);

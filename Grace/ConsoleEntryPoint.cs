@@ -84,8 +84,8 @@ namespace Grace
                 else if (arg == "--")
                 {
                     if (i < args.Length - 1)
-                        { 
-			  filename = args[++i]; 
+                        {
+			    filename = args[++i];
 		        }
                     i++;
                     break;
@@ -100,7 +100,7 @@ namespace Grace
 		    }
             }
 
-            for (int i = lastArgs + 1; i < args.Length; i++) { 
+            for (int i = lastArgs + 1; i < args.Length; i++) {
                  UnusedArgs.Add(args[i]);
 	    }
 
@@ -119,8 +119,9 @@ namespace Grace
             if (filename != null)
                 interp.AddModuleRoot(
                         Path.GetDirectoryName(Path.GetFullPath(filename)));
+            else
+                interp.AddModuleRoot(Path.GetFullPath("."));
 
-            interp.AddModuleRoot(Path.GetFullPath("."));
             interp.FailedImportHook = promptInstallModule;
             interp.LoadPrelude();
             if (builtinsExtensionFile != null)
