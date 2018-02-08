@@ -119,8 +119,8 @@ namespace Grace
             if (filename != null)
                 interp.AddModuleRoot(
                         Path.GetDirectoryName(Path.GetFullPath(filename)));
-            else
-                interp.AddModuleRoot(Path.GetFullPath("."));
+
+            interp.AddModuleRoot(Path.GetFullPath("."));
 
             interp.FailedImportHook = promptInstallModule;
             interp.LoadPrelude();
